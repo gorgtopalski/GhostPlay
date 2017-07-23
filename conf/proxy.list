@@ -1,0 +1,7 @@
+# Lines starting with # won't be parsed
+#
+# Please put all proxies with the following syntax
+# IP:PORT
+#
+# example
+# 0.0.0.0:80

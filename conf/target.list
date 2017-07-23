@@ -1,0 +1,8 @@
+# Lines starting with # won't be parsed
+#
+# Please put all targets with the following syntax
+# URL NumberOfRuns
+#
+# example
+# https://soundcloud.com/travisscott-2/butterfly-effect 1000
+
