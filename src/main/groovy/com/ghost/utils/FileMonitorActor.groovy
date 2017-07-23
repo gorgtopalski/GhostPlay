@@ -27,18 +27,12 @@ class FileMonitorActor extends DefaultActor
     void act()
     {
         loop {
-            react { stop() }
             WatchKey key = watcher.take()
+
             key.pollEvents().each { event ->
 
-                if (event.kind() == ENTRY_MODIFY)
-                {
-                    if (event.context().toString() == fileName)
-                    {
-                        def file = new File("$path/$fileName")
-                        notify.send(file)
-                    }
-                }
+                if (event.kind() == ENTRY_MODIFY && event.context().toString() == fileName)
+                    notify << new File("$path/$fileName")
             }
             key.reset()
         }

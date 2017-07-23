@@ -4,6 +4,9 @@ import groovyx.gpars.actor.Actor
 import groovyx.gpars.actor.DefaultActor
 import org.slf4j.LoggerFactory
 
+import java.util.stream.Collector
+import java.util.stream.Collectors
+
 class FileReader extends DefaultActor
 {
     private Actor parser
@@ -38,21 +41,20 @@ class FileReader extends DefaultActor
 
     private void readFile(File file)
     {
-        def values = false
         if (file.exists())
         {
-            file.readLines().each { line ->
-                if (!line.startsWith('#') && !line.empty)
-                {
-                    values = true
-                    if (set.add(line))
-                        parser << line
-                }
+            def lines = file.readLines().stream()
+                    .filter { line -> !line.startsWith('#') }
+                    .filter { line -> !line.empty }
+                    .filter { line -> set.add(line) }
+                    .collect(Collectors.toList())
+
+            if (set.size() == 0)
+            {
+                LoggerFactory.getLogger(this.class).error("$file.name is empty")
+                System.exit(1)
             }
-        }
-        if (!values) {
-            LoggerFactory.getLogger(this.class).error('No proxies or targets found')
-            System.exit(1)
+            lines.each { parser << it }
         }
     }
 }
