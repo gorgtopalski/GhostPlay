@@ -10,10 +10,25 @@ class FileMonitorSpec extends Specification
     @Shared
     File file
 
-    def setupSpec()
+    def setup()
     {
         file = new File('temp.txt')
         file.createNewFile()
+    }
+
+    def "Empty file"()
+    {
+        def hasChanged = false
+        def notify = actor {
+            react { msg -> hasChanged = true }
+        }
+
+        when:
+        new FileMonitorActor(notify, null, null).start()
+
+        then:
+        thrown(NullPointerException)
+
     }
 
     def "File monitoring"()
@@ -36,7 +51,7 @@ class FileMonitorSpec extends Specification
         assert hasChanged
     }
 
-    def cleanupSpec()
+    def cleanup()
     {
         file.delete()
     }
