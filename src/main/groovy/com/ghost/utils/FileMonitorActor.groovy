@@ -13,15 +13,15 @@ class FileMonitorActor extends DefaultActor
     private Path logDir
     private Actor notify
     private String fileName
-    private String path
+    private String dir
 
-    FileMonitorActor(Actor notify, String path = 'conf', String fileName)
+    FileMonitorActor(Actor notify, String dir = 'conf', String fileName)
     {
-        this.logDir = Paths.get(path)
+        this.logDir = Paths.get(dir)
         logDir.register(watcher, ENTRY_MODIFY);
         this.notify = notify
         this.fileName = fileName
-        this.path = path
+        this.dir = dir
     }
 
     void act()
@@ -32,7 +32,7 @@ class FileMonitorActor extends DefaultActor
             key.pollEvents().each { event ->
 
                 if (event.kind() == ENTRY_MODIFY && event.context().toString() == fileName)
-                    notify << new File("$path/$fileName")
+                    notify << new File("$dir/$fileName")
             }
             key.reset()
         }
