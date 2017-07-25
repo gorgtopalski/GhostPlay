@@ -52,8 +52,10 @@ class FileReader extends DefaultActor
             if (set.size() == 0)
             {
                 LoggerFactory.getLogger(this.class).error("$file.name is empty")
-                System.exit(1)
+                parser << new IOException("$file.name is empty")
+                this.terminate().join()
             }
+
             lines.each { parser << it }
         }
     }
